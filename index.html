@@ -17,6 +17,7 @@
     <span class="sub">UIU · BSCSE / BSDS · Fall 2026</span>
   </div>
   <div class="theme-controls">
+    <a class="theme-toggle nav-link" href="custom.html">Custom builder →</a>
     <select id="conceptSelect" class="theme-toggle" aria-label="Design">
       <option value="board" selected>Timetable board</option>
       <option value="dusk">Campus dusk</option>
@@ -50,6 +51,10 @@
         <button class="btn solid" id="generateBtn" type="button" style="flex:1" disabled title="Add at least one course first">Generate best routine</button>
       </div>
       <div class="empty-note" id="solverNote" style="display:none"></div>
+    </div>
+
+    <div class="reset-row">
+      <button class="btn small ghost danger" id="resetBtn" type="button">Clear all saved data</button>
     </div>
   </aside>
 
@@ -87,13 +92,8 @@
     <div id="statusArea"></div>
     <div class="summary-strip" id="summaryStrip" style="display:none"></div>
 
-    <div class="grid-wrap" id="gridWrap" style="display:none">
+    <div class="grid-wrap" id="gridWrap">
       <div class="grid" id="grid"></div>
-    </div>
-
-    <div id="emptyMain" class="empty-note" style="max-width:520px">
-      No routine yet. Add a few courses on the left, pick up to 3 faculty per course and drag them into your preferred order, then click <b>Generate best routine</b>.
-      The builder searches every section combination for one with no clashes, and ranks the clash‑free options by: how highly-ranked the chosen faculty are, then shortest gaps between classes, then fewest days on campus, then best avoidance of very early or late slots.
     </div>
 
     <div class="alt-list" id="sectionDetail"></div>

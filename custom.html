@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Custom Routine Builder — Fall 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Caveat:wght@500;700&family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <h1>Custom Routine Builder</h1>
+    <span class="sub">UIU · BSCSE / BSDS · Fall 2026</span>
+  </div>
+  <div class="theme-controls">
+    <a class="theme-toggle nav-link" href="index.html">← Routine Builder</a>
+    <select id="conceptSelect" class="theme-toggle" aria-label="Design">
+      <option value="board" selected>Timetable board</option>
+      <option value="dusk">Campus dusk</option>
+      <option value="diary">Study diary</option>
+      <option value="soft">Soft studio</option>
+    </select>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div>
+      <div class="panel-title"><span class="step-num">1</span> Find a course</div>
+      <div class="search-box-wrap">
+        <input type="text" id="searchBox" placeholder="Course code, title, or faculty name…" autocomplete="off">
+        <button class="search-clear" id="searchClear" type="button" aria-label="Clear search" style="display:none">✕</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <div>
+      <div class="panel-title"><span class="step-num">2</span> Course cells</div>
+      <div class="mycourses" id="myCourses">
+        <div class="empty-note">Nothing added yet. Search above and add the courses you want to lay out — each theory course gives you 2 draggable cells (it meets twice a week), each lab course gives you 1 (it meets once, for a longer block).</div>
+      </div>
+    </div>
+
+    <div class="reset-row">
+      <button class="btn small ghost danger" id="resetBtn" type="button">Clear all saved data</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="onboarding" id="onboarding">
+      <div class="ob-header">
+        <div class="ob-title">How this works</div>
+        <button class="onboarding-close" id="onboardingClose" aria-label="Dismiss">✕</button>
+      </div>
+      <div class="ob-steps">
+        <div class="ob-step"><span class="step-num">1</span> Add the courses you're considering — no faculty picking here, just the courses.</div>
+        <div class="ob-step"><span class="step-num">2</span> Drag a cell onto the grid, or click it — every slot with a real section lights up green — then drop or click one to place it.</div>
+        <div class="ob-step"><span class="step-num">3</span> Each placed cell checks itself against real sections and tells you what's actually offered there.</div>
+      </div>
+    </div>
+
+    <div class="main-head">
+      <h2>Your layout</h2>
+      <div class="main-head-actions">
+        <button class="btn small ghost" id="clearGridBtn" type="button">Clear placements</button>
+      </div>
+    </div>
+
+    <div id="statusArea"></div>
+
+    <div class="grid-wrap custom-grid-wrap" id="gridWrap">
+      <div class="cgrid" id="cgrid"></div>
+    </div>
+
+    <div class="alt-list" id="placementDetail"></div>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="app-custom.js"></script>
+</body>
+</html>

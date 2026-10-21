@@ -1,4 +1,4 @@
-  /* ---------- concept skins ----------
+/* ---------- concept skins ----------
      Four complete, fixed looks (not light/dark variants of one palette) —
      picked via [data-concept] on <html>. Diary is the default on bare :root.
      Each defines the full token set below: surfaces, ink, accent, status
@@ -115,6 +115,8 @@
     border-radius: var(--r-btn); padding: 6px 10px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 600;
   }
   select.theme-toggle { width: auto; padding-right: 8px; }
+  a.theme-toggle.nav-link { text-decoration: none; display: inline-flex; align-items: center; font-weight: 600; }
+  a.theme-toggle.nav-link:hover { background: var(--accent-soft); }
 
   .layout {
     display: grid;
@@ -165,7 +167,10 @@
     cursor: pointer; font-size: 16px; line-height: 1; padding: 4px;
   }
   .onboarding-close:hover { color: var(--danger-ink); }
-  @media (max-width: 700px) { .onboarding .ob-steps { flex-direction: column; } }
+  /* On mobile the sidebar already stacks above the routine and the numbered
+     1·2·3 panels read in order as you scroll, so the explainer is redundant
+     there — it only earns its space on wider screens. */
+  @media (max-width: 900px) { .onboarding { display: none; } }
 
   input[type="text"], select {
     width: 100%; border: var(--bw) solid var(--rule); background: var(--paper-raised); color: var(--ink);
@@ -273,6 +278,10 @@
   .generate-bar .row { display: flex; gap: 8px; }
   .generate-bar .btn.solid { padding: 13px 16px; font-size: 14px; }
 
+  .reset-row { margin-top: auto; padding-top: 18px; border-top: var(--bw) dashed var(--rule); }
+  .reset-row .btn { width: 100%; color: var(--ink-soft); }
+  .reset-row .btn.danger:hover { background: var(--danger-bg); color: var(--danger-ink); border-color: var(--danger-ink); }
+
   .main { padding: 18px 24px 80px; }
   .main-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
   .main-head h2 { font-size: 24px; }
@@ -345,3 +354,88 @@
 
   ::-webkit-scrollbar { height: 9px; width: 9px; }
   ::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 6px; }
+
+  /* ---------- custom routine builder (discrete drag-and-drop grid) ---------- */
+  .cgrid {
+    display: grid;
+    min-width: 480px;
+    grid-template-columns: 70px repeat(var(--ndays), 1fr);
+    grid-template-rows: auto repeat(6, 64px);
+  }
+  .cgrid-corner, .cgrid-head {
+    border-bottom: var(--bw) solid var(--rule); border-right: var(--bw) solid var(--rule); background: var(--paper-raised);
+  }
+  .cgrid-head { text-align: center; padding: 8px 4px; font-family: var(--f-d); font-weight: var(--hw); font-size: 12px; }
+  .cgrid-time {
+    grid-column: 1; display: flex; align-items: flex-start; justify-content: flex-end; padding: 5px 6px 0 0;
+    font-size: 9px; color: var(--ink-soft); border-right: var(--bw) solid var(--rule); font-variant-numeric: tabular-nums;
+  }
+  .drop-cell { border-right: var(--bw) solid var(--rule); border-bottom: var(--bw) solid var(--rule); position: relative; }
+  /* Availability preview: the instant a chip or placed token is picked up —
+     by dragging OR by clicking — every legal slot lights up, so the whole
+     grid shows the options at once instead of just whatever's under the
+     cursor: a strong green for slots with a real section actually offered
+     there, a softer amber for slots that are merely free. .cell-hover adds
+     a plain ring on top, tracking the pointer during an active drag, without
+     fighting that green/amber coloring. */
+  .drop-cell.slot-available { background: var(--ok-bg); cursor: pointer; box-shadow: inset 0 0 0 2px var(--ok-ink); }
+  .drop-cell.slot-available:hover { filter: brightness(1.08); }
+  /* Tracks the pointer during a drag, so the cell currently under the
+     cursor is always clearly marked — including when it's one that already
+     has a placed token sitting on it, which is why this targets whichever
+     of the two (the empty cell or the token on top of it) is actually
+     visible at that point. */
+  .drop-cell.cell-hover { box-shadow: inset 0 0 0 3px var(--accent); z-index: 2; }
+  .placed-token.cell-hover { outline: 3px solid var(--accent); outline-offset: 1px; }
+  .cell-chip.chip-active { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .placed-token.token-active { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  /* Floating chip that follows the pointer during a drag, offset above the
+     actual finger/cursor position so the cell being targeted — below the
+     ghost, where the finger or cursor really is — stays fully visible. */
+  .drag-ghost {
+    position: fixed; z-index: 100; pointer-events: none;
+    transform: translate(-50%, -100%);
+    background: var(--bc); color: var(--blk-ink);
+    border: var(--blk-border); border-radius: var(--r-blk);
+    padding: 6px 10px; font-size: 11px; font-weight: 700; font-family: var(--f-d);
+    box-shadow: 0 4px 14px rgba(0,0,0,.3);
+    white-space: nowrap;
+  }
+
+  .placed-token {
+    /* No margin — a gap here would leave a thin strip where the (separate,
+       non-draggable) drop-cell underneath shows through, which is exactly
+       what made the grab cursor feel like it came and went depending on
+       the exact pixel the mouse was on. The 1px inset line below gives the
+       same "card" separation from neighboring cells without shrinking the
+       actual draggable area at all. */
+    margin: 0; border-radius: var(--r-blk); padding: 5px 7px; overflow: hidden; cursor: grab;
+    background: var(--bc); color: var(--blk-ink); border: var(--blk-border);
+    box-shadow: var(--blk-shadow), inset 0 0 0 1px var(--paper);
+    display: flex; flex-direction: column; gap: 2px;
+    touch-action: none; user-select: none; -webkit-user-drag: none;
+  }
+  .placed-token.dragging { opacity: .5; }
+  .pt-head { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+  .pt-code { font-family: var(--f-d); font-weight: var(--hw); font-size: 11px; }
+  .pt-remove { background: none; border: none; color: var(--blk-ink); opacity: .6; cursor: pointer; font-size: 11px; padding: 0 2px; line-height: 1; }
+  .pt-remove:hover { opacity: 1; }
+  .pt-kind { font-size: 9px; opacity: .85; }
+  /* Anchored to --blk-ink (always dark, since every concept's course-block
+     colors are light pastels) rather than the page-level --ok-ink/
+     --danger-ink, which are tuned for contrast against the *page* background
+     — on a dark concept like dusk those turn out pale-on-pale and nearly
+     unreadable sitting on top of a block instead. */
+  .pt-match { font-size: 9px; font-weight: 700; margin-top: auto; }
+  .pt-match.warn { color: color-mix(in srgb, var(--blk-ink) 45%, #9c2b2b 55%); }
+  .pt-match.ok { color: color-mix(in srgb, var(--blk-ink) 55%, #1f7a4a 45%); }
+
+  .cell-tray { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .cell-tray-empty { font-size: 11px; color: var(--ink-soft); font-style: italic; }
+  .cell-chip {
+    border: var(--bw) dashed var(--accent); border-radius: var(--r-md); padding: 7px 10px;
+    font-size: 11.5px; font-weight: 600; color: var(--accent-ink); background: var(--accent-soft);
+    cursor: grab; touch-action: none; user-select: none; -webkit-user-drag: none;
+  }
+  .cell-chip.dragging { opacity: .5; }
