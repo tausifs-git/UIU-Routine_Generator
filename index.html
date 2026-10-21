@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UIU Routine Builder — Fall 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Caveat:wght@500;700&family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <h1>Routine Builder</h1>
+    <span class="sub">UIU · BSCSE / BSDS · Fall 2026</span>
+  </div>
+  <div class="theme-controls">
+    <select id="conceptSelect" class="theme-toggle" aria-label="Design">
+      <option value="board" selected>Timetable board</option>
+      <option value="dusk">Campus dusk</option>
+      <option value="diary">Study diary</option>
+      <option value="soft">Soft studio</option>
+    </select>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div>
+      <div class="panel-title"><span class="step-num">1</span> Find a course</div>
+      <div class="search-box-wrap">
+        <input type="text" id="searchBox" placeholder="Course code, title, or faculty name…" autocomplete="off">
+        <button class="search-clear" id="searchClear" type="button" aria-label="Clear search" style="display:none">✕</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <div>
+      <div class="panel-title"><span class="step-num">2</span> My courses</div>
+      <div class="mycourses" id="myCourses">
+        <div class="empty-note">Nothing added yet. Search above and add the courses you plan to take — add the lab code too, if the course has one (e.g. both CSE 2215 and CSE 2216).</div>
+      </div>
+    </div>
+
+    <div class="generate-bar">
+      <div class="panel-title"><span class="step-num">3</span> Build routine</div>
+      <div class="row">
+        <button class="btn solid" id="generateBtn" type="button" style="flex:1" disabled title="Add at least one course first">Generate best routine</button>
+      </div>
+      <div class="empty-note" id="solverNote" style="display:none"></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="onboarding" id="onboarding">
+      <div class="ob-header">
+        <div class="ob-title">How this works</div>
+        <button class="onboarding-close" id="onboardingClose" aria-label="Dismiss">✕</button>
+      </div>
+      <div class="ob-steps">
+        <div class="ob-step"><span class="step-num">1</span> Search and add every course you're planning to take.</div>
+        <div class="ob-step"><span class="step-num">2</span> For each one, pick up to 3 faculty and drag them into the order you'd prefer.</div>
+        <div class="ob-step"><span class="step-num">3</span> Click Generate — it finds a clash‑free routine ranked by your picks.</div>
+      </div>
+    </div>
+
+    <div class="main-head">
+      <h2 id="mainHeading">Your routine</h2>
+      <div class="main-head-actions">
+        <div class="alt-nav" id="altNav" style="display:none">
+          <button class="btn small ghost" id="prevAlt" type="button">←</button>
+          <span id="altLabel">Option 1 of 1</span>
+          <button class="btn small ghost" id="nextAlt" type="button">→</button>
+        </div>
+        <button class="btn small" id="saveRoutineBtn" type="button" style="display:none">☆ Save this routine</button>
+        <div class="saved-picker" id="savedPicker" style="display:none">
+          <span class="saved-label">Saved</span>
+          <select id="savedSelect"></select>
+          <button class="icon-btn" id="deleteSavedBtn" title="Delete selected routine" aria-label="Delete selected routine">✕</button>
+        </div>
+      </div>
+    </div>
+    <div class="saved-meta" id="savedMeta"></div>
+
+    <div id="statusArea"></div>
+    <div class="summary-strip" id="summaryStrip" style="display:none"></div>
+
+    <div class="grid-wrap" id="gridWrap" style="display:none">
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <div id="emptyMain" class="empty-note" style="max-width:520px">
+      No routine yet. Add a few courses on the left, pick up to 3 faculty per course and drag them into your preferred order, then click <b>Generate best routine</b>.
+      The builder searches every section combination for one with no clashes, and ranks the clash‑free options by: how highly-ranked the chosen faculty are, then shortest gaps between classes, then fewest days on campus, then best avoidance of very early or late slots.
+    </div>
+
+    <div class="alt-list" id="sectionDetail"></div>
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
